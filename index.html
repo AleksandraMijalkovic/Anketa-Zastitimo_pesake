@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anketa Zaštitimo pešake</title>
+  <link rel="stylesheet" href="main.css" type="text/css">
+  <script type="text/javascript">
+  function myFunction(event) {
+    event.preventDefault();
+    var rightAnswers = [3, 1, 3, 4, 2, 3, 2, 1, 1, 2];
+    var answers = [];
+    var nmbofRightAnswers = 0;
+    var form = document.getElementById("quiz-form");
+    var params = serialize(form);
+    var len = Object.keys(params).length
+    params = JSON.stringify(params)
+    if (len < 10) {
+      alert('Da bi završili anketu, morate odgovoriti na sva pitanja!');
+      return null;
+    }
+    for (var k = 1; k < 11; k++) {
+      document.getElementById("question" + k + "-" + rightAnswers[k - 1]).className += " green";
+      var val = document.querySelector('input[name="question' + k + '"]:checked').value;
+      if (val == rightAnswers[k - 1]) {
+            nmbofRightAnswers++;
+            answers[k - 1] = 1;
+        } else { answers[k - 1] = 0;
+            document.getElementById("question" + k + "-" + val).className += "red";
+          }
+        }
+    var inputs = document.getElementsByClassName("js-input-radio");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].disabled = true;
+    }
+    console.log(answers);
+    document.getElementById('nmbofRightAnswers').innerHTML += '<div>Odgovorili ste tačno na ' + nmbofRightAnswers + ' od ' + rightAnswers.length + ' pitanja</div>';
+    // return true;
+    var http = new XMLHttpRequest();
+    http.open('POST', 'statistics.php', true);
+    http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    http.onreadystatechange = function () {
+        if (http.readyState == 4 && http.status == 200) { console.log(http.responseText);
+        var table = drawTable(JSON.parse(http.responseText))
+        document.getElementById("statistics").innerHTML = table;
+        }
+    }
+    http.send('answers=' + JSON.stringify(answers));
+  }
+
+  function drawTable(a) {
+    var s = '<table><tr><th>Pitanje</th><th>Tačno</th><th>Netačno</th></tr>';
+    for (var i = 0; i < 10; i++) { s = s + '<tr><td>' + (parseInt(i) + 1) + ' pitanje</td><td>' + a[i] + '</td>' + '<td>' + (parseInt(a[10]) - parseInt(a[i])) + '</td>';
+    }
+    s = s + '</table>';
+    s = s + '<div class="total">Ukupan broj učesnika ankete: ' + a[10];
+    return s;
+  }
+
+  function serialize(form) {
+    var obj = {};
+    var elements = form.querySelectorAll("input:checked");
+    for (var i = 0; i < elements.length; i++) {
+    var element = elements[i];
+    var name = element.name;
+    var value = element.value;
+    if (name) {
+        obj[name] = value;
+      }
+    }
+    return obj;
+  }
+</script>
+</head>
+<body>
+  <div class="wrapper">
+    <header>
+      <div class="logo">
+        <img src="images/logo.jpg" alt="Logo">
+      </div><!-- end .logo  -->
+    </header>
+    <span>Proverite svoje znanje</span>
+  <div id="quiz">
+    <form id="quiz-form" method="post">
+      <div class="question">
+        <p>Da li je dozvoljeno da pešak upotrebljava mobilni telefon prilikom prelaska preko kolovoza?</p>
+      </div><!-- end .question -->
+      <div class="answers">
+        <label id="question1-1">
+          <input class="js-input-radio" type="radio" name="question1" value="1">
+          1. Da, dozvoljeno
+        </label><!-- end #question1-1 -->
+        <label id="question1-2">
+          <input class="js-input-radio" type="radio" name="question1" value="2">
+          2. Samo ako ima slušalice
+        </label><!-- end #question1-2 -->
+        <label id="question1-3">
+          <input class="js-input-radio" type="radio" name="question1" value="3">
+          3. Ne, upotreba mobilnog telefona prilikom prelaska kolovoza je zabranjena
+        </label><!-- end #question1-3 -->
+        <label id="question1-4">
+          <input class="js-input-radio" type="radio" name="question1" value="4">
+          4. Mogu samo da šalju sms
+        </label><!-- end #question1-4 -->
+      </div><!-- end .answers-->
+
+      <div class="question">
+        <p>Pešak je dužan da pređe ulicu na obeleženom pešačkom prelazu:</p>
+      </div><!-- end .question -->
+      <div class="answers">
+        <label id="question2-1">
+          <input class="js-input-radio" type="radio" name="question2" value="1">
+          1. Samo ako je pešački prelaz na udaljenosti manjoj od 100m
+        </label><!-- end #question2-1 -->
+        <label id="question2-2">
+          <input class="js-input-radio" type="radio" name="question2" value="2">
+          2. Samo ako je pešački prelaz na udaljenosti većoj od 100m
+        </label><!-- end #question2-2 -->
+        <label id="question2-3">
+          <input class="js-input-radio" type="radio" name="question2" value="3">
+          3. Kolovoz se može preći bilo gde uz povećan oprez
+        </label><!-- end #question2-3 -->
+      </div><!-- end .answers -->
+
+      <div class="question">
+        <p>Da li je vozač dužan da propusti pešake na obeleženom pešačkom prelazu?</p>
+      </div><!-- end .question -->
+      <div class="answers">
+        <label id="question3-1">
+          <input class="js-input-radio" type="radio" name="question3" value="1">
+          1. Samo ako ga blagovremeno uoči
+        </label><!-- end #question3-1 -->
+        <label id="question3-2">
+          <input class="js-input-radio" type="radio" name="question3" value="2">
+          2. Samo ako je stupio na kolovoz
+        </label><!-- end #question3-2 -->
+        <label id="question3-3">
+          <input class="js-input-radio" type="radio" name="question3" value="3">
+          3. Samo ako je stupio na pešački prelaz ili pokazuje nameru da će stupiti na pešački prelaz
+        </label><!-- end #question3-3 -->
+      </div><!-- end .answers -->
+
+      <div class="question">
+        <p>Šta je po Vašem mišljenju moguće uraditi za vreme koje izgubite propuštajući pešake</p>
+      </div><!-- end .question -->
+      <div class="answers">
+        <label id="question4-1">
+          <input class="js-input-radio" type="radio" name="question4" value="1">
+          1. Promenim radio stanicu
+        </label><!-- end #question4-1 -->
+        <label id="question4-2">
+          <input class="js-input-radio" type="radio" name="question4" value="2">
+          2. Da stignem 30 sekundi ranije na odredište (kuća, posao...)
+        </label><!-- end #question4-2 -->
+        <label id="question4-3">
+          <input class="js-input-radio" type="radio" name="question4" value="3">
+          3. Da kupim novine
+        </label><!-- end #question4-3 -->
+        <label id="question4-4">
+          <input class="js-input-radio" type="radio" name="question4" value="4">
+          4. Ništa vredno ugrožavanja života
+        </label><!-- end #question4-4 -->
+      </div><!-- end .answers -->
+
+      <div class="question">
+        <p>Da li pešak može biti na obeleženom pešačkom prelazu kada je "crveno za pešake" na semaforu?</p>
+      </div><!-- end .question -->
+      <div class="answers">
+        <label id="question5-1">
+          <input class="js-input-radio" type="radio" name="question5" value="1">
+          1. Ne, nikada
+        </label><!-- end #question5-1 -->
+        <label id="question5-2">
+          <input class="js-input-radio" type="radio" name="question5" value="2">
+          2. Da, ako je stupio na kolovoz dok je bilo upaljeno "zeleno za pešake"
+        </label><!-- end #question5-2 -->
+        <label id="question5-3">
+          <input class="js-input-radio" type="radio" name="question5" value="3">
+          3. Da, ali mora da propusti vozila u skretanju
+        </label><!-- end #question5-3 -->
+      </div><!-- end .answers -->
+
+      <div class="question">
+        <p>Brzina kretanja vozila u "zoni škole" u naselju ograničena je do:</p>
+      </div><!-- end .question -->
+      <div class="answers">
+        <label id="question6-1">
+          <input class="js-input-radio" type="radio" name="question6" value="1">
+          1. 30 km/h, osim vikendom
+        </label><!-- end #question6-1 -->
+        <label id="question6-2">
+          <input class="js-input-radio" type="radio" name="question6" value="2">
+          2. 50 km/h, osim vikendom
+        </label><!-- end #question6-2 -->
+        <label id="question6-3">
+          <input class="js-input-radio" type="radio" name="question6" value="3">
+          3. 30 km/h, u vremenu od 7:00 do 21:00 sati
+        </label><!-- end #question6-3 -->
+      </div><!-- end .answers -->
+
+      <div class="question">
+        <p>Prilikom prolaska vozila na uslovni znak (filter strelicu) vozač mora da propusti:</p>
+      </div><!-- end .question -->
+      <div class="answers">
+        <label id="question7-1">
+          <input class="js-input-radio" type="radio" name="question7" value="1">
+          1. Samo pešake koji prelaze preko kolovoza
+        </label><!-- end #question7-1 -->
+        <label id="question7-2">
+          <input class="js-input-radio" type="radio" name="question7" value="2">
+          2. Sva vozila koja se kreću po putu na koji ulazi kao i da propusti pešake koji prelazi preko kolovoza
+        </label><!-- end #question7-2 -->
+        <label id="question7-3">
+          <input class="js-input-radio" type="radio" name="question7" value="3">
+          3. Samo vozila
+        </label><!-- end #question7-3 -->
+      </div><!-- end .answers -->
+
+      <div class="question">
+        <p>Visina vozila (Jugo Koral, Fiat Punto, Golf 5 i Fiat 500L) kreće se u rasponu od:</p>
+      </div><!-- end .question -->
+      <div class="answers">
+        <label id="question8-1">
+          <input class="js-input-radio" type="radio" name="question8" value="1">
+          1. 1,39-1,66 m
+        </label><!-- end #question8-1 -->
+        <label id="question8-2">
+          <input class="js-input-radio" type="radio" name="question8" value="2">
+          2. 1,16-1,38 m
+        </label><!-- end #question8-2 -->
+        <label id="question8-3">
+          <input class="js-input-radio" type="radio" name="question8" value="3">
+          3. 1,05-1,54 m
+        </label><!-- end #question8-3 -->
+      </div><!-- end .answers -->
+
+      <div class="question">
+        <p>Prosečna visina dece uzrasta 7-10 godina (1.-4. razred) kreće se u rasponu od:</p>
+      </div><!-- end .question -->
+      <div class="answers">
+        <label id="question9-1">
+          <input class="js-input-radio" type="radio" name="question9" value="1">
+          1. 1,21-1,38 m
+        </label><!-- end #question9-1 -->
+        <label id="question9-2">
+          <input class="js-input-radio" type="radio" name="question9" value="2">
+          2. 1,41-1,58 m
+        </label><!-- end #question9-2 -->
+        <label id="question9-3">
+          <input class="js-input-radio" type="radio" name="question9" value="3">
+          3. 1,41-1,48 m
+        </label><!-- end #question9-3 -->
+      </div><!-- end .answers -->
+
+      <div class="question">
+        <p>Po Vašem mišljenju, da li je moguće uočiti dete uzrasta 7-10 godina (1.-4. razred) iza automobila parkiranog na trotoaru/ispred pešačkog prelaza?</p>
+      </div><!-- end .question -->
+      <div class="answers">
+        <label id="question10-1">
+          <input class="js-input-radio" type="radio" name="question10" value="1">
+          1. Da
+        </label><!-- end #question10-1 -->
+        <label id="question10-2">
+          <input class="js-input-radio" type="radio" name="question10" value="2">
+          2. Ne
+        </label><!-- end #question10-2 -->
+        <label id="question10-3">
+          <input class="js-input-radio" type="radio" name="question10" value="3">
+          3. Uz povećanu pažnju
+        </label><!-- end #question10-3 -->
+      </div><!-- end .answers -->
+      <div class="rightanswers" id="nmbofRightAnswers"></div>
+      <div class="stats">
+        <div id="statistics">
+          <input type="submit" onclick="myFunction(event)" id="submit" value="Potvrdi">
+        </div><!-- end #statistics-->
+      </div><!-- end .stats -->
+    </form>
+  </div><!-- end #quiz-->
+  <footer>
+    <div class="logo">
+      <img src="images/zastitimopesake.jpg" alt="Zaštitimo pešake">
+    </div><!-- end .logo -->
+  </footer>
+</div><!-- end .wrapper -->
+</body>
+</html>
