@@ -34,7 +34,7 @@
         inputs[i].disabled = true;
     }
     console.log(answers);
-    document.getElementById('nmbofRightAnswers').innerHTML += '<div>Odgovorili ste tačno na ' + nmbofRightAnswers + ' od ' + rightAnswers.length + ' pitanja</div>';
+    document.getElementById('nmbofRightAnswers').innerHTML += '<p>Odgovorili ste tačno na ' + nmbofRightAnswers + ' od ' + rightAnswers.length + ' pitanja</p>';
     // return true;
     var http = new XMLHttpRequest();
     http.open('POST', 'statistics.php', true);
