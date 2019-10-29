@@ -47,6 +47,9 @@ span {
 .logo {
   margin-bottom: 20px;
 }
+img {
+  max-width: 100%;
+}
 #submit {
   background-color: #279;
   color: #fff;
