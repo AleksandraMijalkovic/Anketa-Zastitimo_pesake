@@ -14,7 +14,7 @@
     var form = document.getElementById("quiz-form");
     var params = serialize(form);
     var len = Object.keys(params).length
-    params = JSON.stringify(params)
+
     if (len < 10) {
       alert('Da bi završili anketu, morate odgovoriti na sva pitanja!');
       return null;
@@ -24,8 +24,8 @@
       var val = document.querySelector('input[name="question' + k + '"]:checked').value;
       if (val == rightAnswers[k - 1]) {
             nmbofRightAnswers++;
-            answers[k - 1] = 1;
-        } else { answers[k - 1] = 0;
+
+        } else { 
             document.getElementById("question" + k + "-" + val).className += "red";
           }
         }
@@ -33,28 +33,9 @@
     for (var i = 0; i < inputs.length; i++) {
         inputs[i].disabled = true;
     }
-    console.log(answers);
-    document.getElementById('nmbofRightAnswers').innerHTML += '<p>Odgovorili ste tačno na ' + nmbofRightAnswers + ' od ' + rightAnswers.length + ' pitanja</p>';
-    // return true;
-    var http = new XMLHttpRequest();
-    http.open('POST', 'statistics.php', true);
-    http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    http.onreadystatechange = function () {
-        if (http.readyState == 4 && http.status == 200) { console.log(http.responseText);
-        var table = drawTable(JSON.parse(http.responseText))
-        document.getElementById("statistics").innerHTML = table;
-        }
-    }
-    http.send('answers=' + JSON.stringify(answers));
-  }
 
-  function drawTable(a) {
-    var s = '<table><tr><th>Pitanje</th><th>Tačno</th><th>Netačno</th></tr>';
-    for (var i = 0; i < 10; i++) { s = s + '<tr><td>' + (parseInt(i) + 1) + ' pitanje</td><td>' + a[i] + '</td>' + '<td>' + (parseInt(a[10]) - parseInt(a[i])) + '</td>';
-    }
-    s = s + '</table>';
-    s = s + '<div class="total">Ukupan broj učesnika ankete: ' + a[10];
-    return s;
+    document.getElementById('nmbofRightAnswers').innerHTML += '<p>Odgovorili ste tačno na ' + nmbofRightAnswers + ' od ' + rightAnswers.length + ' pitanja</p>';
+
   }
 
   function serialize(form) {
