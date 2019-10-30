@@ -13,8 +13,7 @@
     var nmbofRightAnswers = 0;
     var form = document.getElementById("quiz-form");
     var params = serialize(form);
-    var len = Object.keys(params).length
-
+    var len = Object.keys(params).length;
     if (len < 10) {
       alert('Da bi završili anketu, morate odgovoriti na sva pitanja!');
       return null;
@@ -24,7 +23,6 @@
       var val = document.querySelector('input[name="question' + k + '"]:checked').value;
       if (val == rightAnswers[k - 1]) {
             nmbofRightAnswers++;
-
         } else {
             document.getElementById("question" + k + "-" + val).className += "red";
           }
@@ -34,9 +32,7 @@
         inputs[i].disabled = true;
     }
     document.getElementById('nmbofRightAnswers').innerHTML += '<p>Odgovorili ste tačno na ' + nmbofRightAnswers + ' od ' + rightAnswers.length + ' pitanja</p>';
-
   }
-
   function serialize(form) {
     var obj = {};
     var elements = form.querySelectorAll("input:checked");
